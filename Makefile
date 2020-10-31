@@ -1,7 +1,7 @@
 %.bin: %.asm
-	z80asm $< -o $@.raw
-	python makerom.py $@.raw $@
-	rm $@.raw
+	z80asm $< -o /tmp/$@.raw
+	python makerom.py /tmp/$@.raw $@
+	rm /tmp/$@.raw
 
 # F=[rom file] make upload
 upload:
