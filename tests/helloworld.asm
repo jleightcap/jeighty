@@ -21,7 +21,7 @@ start:
         ld A, %00001111 ; lower nibble
         call _LCD_send_byte
 
-        ; print "Hello world!"
+        ; print "Hello, world!"
         ld A, 'H'
         call _LCD_send_char
         ld A, 'e'

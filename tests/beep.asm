@@ -1,39 +1,66 @@
 BEEP_PORT: equ 0
-BEEP_LD_BIT: eq 4
-BEEP_QT_BIT: eq 5
+BEEP_LD_BIT: equ 4
+BEEP_QT_BIT: equ 5
 
+
+; PITCH FREQUENCY VALUES
+; ======================
+E4:   equ 74
+FIS4: equ 65
+B4:   equ 49
+CIS5: equ 43
+D5:   equ 41
+
+; PITCH TIMING LOOP VALUES
+; ========================
+; timed relative to the highest frequency (D5).
+PT_MAX: equ 160
+PT_FRQ: equ 587
+PT_E4:   equ 330 * PT_MAX / PT_FRQ
+PT_FIS4: equ 370 * PT_MAX / PT_FRQ
+PT_B4:   equ 493 * PT_MAX / PT_FRQ
+PT_CIS5: equ 554 * PT_MAX / PT_FRQ
+PT_D5:   equ 587 * PT_MAX / PT_FRQ
+
+; pitch LOOP values
 org 0x0000
 start:
         ; initialize output mode for IO port A
         ld A, 0x0f
         out (2), A
 
-        ; (BEEP_PORT) = {x, x, BEEP_QT_BIT, BEEP_LD_BIT, x, x, x, x}
-        ; this port is shared with the LCD! have to be careful not to have
-        ; a rising edge on bit 7, as this will latch data into LCD registers.
+    phase:
+        ; pitch 1
+        ld B, FIS4
+        ld D, PT_FIS4
+        call playfreq
 
-        ; in this example, all the bit sets/resets would be faster by and/or a
-        ; mask however, this is only the case when both beepers need an update
-        ; on the same `out` ; doesn't save many clock cycles to do 2 `set`s or
-        ; `res`s so just save an edge case and don't bother.
+        jp phase
 
+        halt
+
+; play a WAIT value for a number of cycles
+; - pass WAIT value in B
+; - pass number of cycles in D
+playfreq:
         ld A, 0x00
     beep_loop:
-        res BEEP_LD_BIT, A
         res BEEP_QT_BIT, A
         out (0), A
-        ; delay for delay for B * sum[C(delay1)] clock cycles
-        ld B, 0x4f
+        ld C, B
     delay1:
         nop
-        djnz delay1
-        set BEEP_LD_BIT, A
+        dec C
+        jr nz, delay1
         set BEEP_QT_BIT, A
-        out (BEEP_PORT), A
-        ; delay for delay for B * sum[C(delay2)] clock cycles
-        ld B, 0x4f
+        out (0), A
+        ld C, B
     delay2:
         nop
-        djnz delay2
-        jp beep_loop
-        halt
+        dec C
+        jr nz, delay2
+
+        dec D
+        jr nz, beep_loop
+
+        ret
