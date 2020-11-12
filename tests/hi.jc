@@ -1,0 +1,6 @@
+(import "bios.lbl")
+
+(defun (helloworld `int)
+    (putc 72) ; TODO in jal: implicit conversion from char to uint
+    (putc 73)
+)
