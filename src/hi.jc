@@ -1,0 +1,6 @@
+(import "lcd.lbl")
+
+(defun (helloworld `int)
+    (putc 'H') # TODO: ASCII characters
+    (putc 'I')
+)

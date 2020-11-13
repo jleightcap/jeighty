@@ -1,6 +1,0 @@
-(import "lcd.lbl")
-
-(defun (helloworld `int)
-    (putc 72) # TODO: ASCII characters
-    (putc 73)
-)

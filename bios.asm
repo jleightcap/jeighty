@@ -1,11 +1,12 @@
-LCD_PORT:    equ 0
-BEEP_PORT:   equ 0
-BEEP_LD_BIT: equ 4
-BEEP_QT_BIT: equ 5
+LCD_PORT:  equ 0
+BEEP_PORT: equ 0
+LED_PORT:  equ 0
+LED_BIT:   equ 4
+BEEP_BIT:  equ 5
 
 org 0x0000
 start:
-        ; initialize port A as output only
+        ; initialize PIO port A as output only
         ld A, 0x0f
         out (2), A
         call _LCD_init
@@ -38,32 +39,6 @@ _LCD_send_byte:
         ; load data with E low -> same data with E high -> same data with E low
         out (LCD_PORT), A
         ; bit 6 contains LCD register select
-        set 7, A
-        out (LCD_PORT), A
-        res 7, A
-        out (LCD_PORT), A
-        ret
-
-; send char in register A to LCD
-putc:
-        ; B stores lower nibble, A stores upper nibble
-        ld B, A
-        and A, 0x0f
-        srl B ; shift over upper nibble
-        srl B
-        srl B
-        srl B
-        set 6, A ; select LCD data register
-        set 6, B
-        ; send upper nibble
-        ld C, LCD_PORT ; IO port immediates only supported for A register
-        out (C), B
-        set 7, B
-        out (C), B
-        res 7, B
-        out (C), B
-        ; send lower nibble
-        out (LCD_PORT), A
         set 7, A
         out (LCD_PORT), A
         res 7, A

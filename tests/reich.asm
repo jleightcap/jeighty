@@ -2,7 +2,7 @@ BEEP_PORT: equ 0
 BEEP_BIT:  equ 5
 
 
-; PITCH FREQUENCY VALUES
+; PITCH FREQUENCY VALUES:
 ; ======================
 ; 'tuned' values based on square wave implementation
 E4:   equ 74
