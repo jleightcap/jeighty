@@ -3,22 +3,31 @@ LBL  = rom.lbl # includes for ROM definitions
 
 SRCS = $(wildcard *.jc)
 OBJS = $(SRCS:.jc=.jsm)
-ASMS = $(wildcard *.asm)
+# order matters!
+ASMS = blink.asm lcd.asm beep.asm
+# function name entry point, called from BIOS
+ENTR = helloworld
 
-$(ROM): $(ASMS) $(OBJS)
+$(ROM): bios.jsm $(ASMS) $(OBJS)
 	@echo "assembling rom..."
-	z80asm -L $(ASMS) $(OBJS) -o /tmp/$@.raw &> $(LBL)
+	z80asm bios.jsm $(ASMS) $(OBJS) -o /tmp/$@.raw
 	@echo "making rom image..."
 	python ../makerom.py /tmp/$@.raw $@ && rm /tmp/$@.raw
+
+%.jsm: %.jc
+	jal $< $@
+
+bios.jsm: bios.asm
+	@echo "generating rom labels..."
+	z80asm -L $^ $(ASMS) $(OBJS) -o /dev/null 2> $(LBL)
+	sed 's/; ENTRYPOINT/call $(shell awk '/$(ENTR)/ {print $$3}' $(LBL))/g' \
+		$^ > $@
 
 upload: $(ROM)
 	@echo "uploading rom image..."
 	minipro -p AT28C256 -w $(ROM)
 
-%.jsm: %.jc
-	jal $< $@
-
 clean:
 	rm -f *.jsm *.bin $(LBL)
 
-.PHONY: clean upload
+.PHONY: clean upload enter
