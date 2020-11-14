@@ -1,5 +1,3 @@
-import 'bios.asm'
-
 ; send char in register A to LCD
 putc:
         ; B stores lower nibble, A stores upper nibble

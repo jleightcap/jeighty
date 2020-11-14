@@ -1,5 +1,3 @@
-import "bios.asm"
-
 ; PITCH FREQUENCY VALUES
 ; ======================
 E4:   equ 74

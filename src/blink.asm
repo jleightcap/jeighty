@@ -1,5 +1,3 @@
-import "bios.asm"
-
 ledon:
         ld A, 0x00
         set LED_BIT, A

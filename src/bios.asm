@@ -12,7 +12,7 @@ start:
         call _LCD_init
 
         ; entrypoint
-        call helloworld
+        ; call ...
 
         halt
 
