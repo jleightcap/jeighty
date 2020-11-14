@@ -10,7 +10,10 @@ start:
         ld A, 0x0f
         out (2), A
         call _LCD_init
+
+        ; entrypoint
         call helloworld
+
         halt
 
 _LCD_init:
@@ -18,19 +21,16 @@ _LCD_init:
         ; LCD function set: 4-bit mode
         ld A, %00000010
         call _LCD_send_byte
-
         ; LCD function set: 2 rows, 5x8 characters
         ld A, %00000010 ; 8b0010_10xx upper nibble (instruction select)
         call _LCD_send_byte
         ld A, %00001000 ; lower nibble
         call _LCD_send_byte
-
         ; LCD display control: turn on, blink, etc.
         ld A, %00000000 ; 8b0000_1111 upper nibble (insruction select)
         call _LCD_send_byte
         ld A, %00001111 ; lower nibble
         call _LCD_send_byte
-
         ret
 
 ; send byte (a control word) in register A to LCD

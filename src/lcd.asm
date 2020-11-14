@@ -1,4 +1,4 @@
-import "bios.asm"
+import 'bios.asm'
 
 ; send char in register A to LCD
 putc:
