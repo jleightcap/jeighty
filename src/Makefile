@@ -1,25 +1,29 @@
-ROM  = rom.bin # final ROM image
-LBL  = rom.lbl # includes for ROM definitions
+ROM = rom.bin # final ROM image
+LBL = rom.lbl # includes for ROM definitions
 
-SRCS = $(wildcard *.jc)
-OBJS = $(SRCS:.jc=.jsm)
-# order matters!
+# assembles in order, so make order explicit
+SRCS = hi.jc
 ASMS = blink.asm lcd.asm beep.asm
+OBJS = $(SRCS:.jc=.jsm)
+
 # function name entry point, called from BIOS
 ENTR = helloworld
 
 $(ROM): bios.jsm $(ASMS) $(OBJS)
 	@echo "assembling rom..."
-	z80asm bios.jsm $(ASMS) $(OBJS) -o /tmp/$@.raw
+	z80asm $< $(ASMS) $(OBJS) -o /tmp/$@.raw
 	@echo "making rom image..."
 	python ../makerom.py /tmp/$@.raw $@ && rm /tmp/$@.raw
 
 %.jsm: %.jc
 	jal $< $@
 
-bios.jsm: bios.asm $(OBJS)
+$(LBL): bios.asm $(ASMS) $(OBJS)
 	@echo "generating rom labels..."
-	z80asm -L bios.asm $(ASMS) $(OBJS) -o /dev/null &> $(LBL)
+	z80asm -L $< $(ASMS) $(OBJS) -o /dev/null &> $(LBL)
+
+bios.jsm: bios.asm $(LBL)
+	@echo "setting up BIOS entrypoint..."
 	sed 's/call 0/call $(shell awk '/$(ENTR)/ {print $$3}' $(LBL))/g' \
 		$< > $@
 
@@ -30,4 +34,4 @@ upload: $(ROM)
 clean:
 	rm -f *.jsm *.bin $(LBL)
 
-.PHONY: clean upload enter
+.PHONY: clean upload
