@@ -17,11 +17,11 @@ $(ROM): bios.jsm $(ASMS) $(OBJS)
 %.jsm: %.jc
 	jal $< $@
 
-bios.jsm: bios.asm
+bios.jsm: bios.asm $(OBJS)
 	@echo "generating rom labels..."
-	z80asm -L $^ $(ASMS) $(OBJS) -o /dev/null 2> $(LBL)
-	sed 's/; ENTRYPOINT/call $(shell awk '/$(ENTR)/ {print $$3}' $(LBL))/g' \
-		$^ > $@
+	z80asm -L bios.asm $(ASMS) $(OBJS) -o /dev/null &> $(LBL)
+	sed 's/call 0/call $(shell awk '/$(ENTR)/ {print $$3}' $(LBL))/g' \
+		$< > $@
 
 upload: $(ROM)
 	@echo "uploading rom image..."

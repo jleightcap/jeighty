@@ -11,7 +11,7 @@ start:
         out (2), A
         call _LCD_init
 
-        ; ENTRYPOINT
+        call 0
         halt
 
 _LCD_init:
