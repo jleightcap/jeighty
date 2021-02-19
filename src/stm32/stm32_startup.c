@@ -21,9 +21,8 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-/* https://github.com/tardate/LittleArduinoProjects/tree/master/ARM/STM32F103C8T6/BareMetal */
-
-
+/* https://github.com/tardate/LittleArduinoProjects/tree/master/ARM/STM32F103C8T6/BareMetal
+ */
 
 // startup declarations and function for the STM32F103C8T6
 // See: RM0008 10.1.2 Interrupt and exception vectors, Table 63. Vector table

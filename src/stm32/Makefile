@@ -21,4 +21,4 @@ reset:
 	st-flash reset
 
 clean:
-	rm -f *.o *.elf
+	rm -f *.o *.elf *.bin *.map
